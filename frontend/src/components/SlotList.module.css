@@ -1,0 +1,47 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dayHeading {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-h);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.slot {
+  padding: 10px 20px;
+  border: 1px solid var(--accent-border);
+  border-radius: 6px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.slot:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.empty {
+  color: var(--text);
+  text-align: center;
+  padding: 40px 0;
+}

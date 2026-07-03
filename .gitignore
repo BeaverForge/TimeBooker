@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+backend/build/
+
+# Environment
+.env
+.env.local
+*.env
+
+# Go
+backend/vendor/
+
+# OS
+.DS_Store
+Thumbs.db

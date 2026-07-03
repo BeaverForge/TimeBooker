@@ -1,0 +1,24 @@
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.heading {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin-bottom: 32px;
+}
+
+.status {
+  color: var(--text);
+  text-align: center;
+  padding: 40px 0;
+}
+
+.error {
+  color: #e53e3e;
+  text-align: center;
+  padding: 40px 0;
+}
