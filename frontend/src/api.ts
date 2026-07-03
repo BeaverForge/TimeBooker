@@ -1,6 +1,6 @@
 import type { Slot, Booking } from "./types";
 
-const BACKEND_URL = "http://localhost:8080";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? "/api";
 
 export async function fetchSlots(): Promise<Slot[]> {
   const res = await fetch(`${BACKEND_URL}/slots`);

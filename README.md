@@ -57,3 +57,11 @@ npm run dev
 `npm run dev` starts the Vite development server. Vite serves the React app and watches your source files for changes — any edit you save is reflected in the browser instantly without a full page reload (this is called Hot Module Replacement, or HMR).
 
 The app will be available at `http://localhost:5173`.
+
+
+TODO: 
+
+Email — coach gets notified on booking, user gets notified on confirm/decline
+Frontend deployment — serving the React app from somewhere (nginx on the droplet, or elsewhere)
+Firewall — lock down the droplet so only necessary ports are exposed
+CORS — make the allowed origin configurable for production
