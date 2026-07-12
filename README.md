@@ -59,9 +59,4 @@ npm run dev
 The app will be available at `http://localhost:5173`.
 
 
-TODO: 
 
-Email — coach gets notified on booking, user gets notified on confirm/decline
-Frontend deployment — serving the React app from somewhere (nginx on the droplet, or elsewhere)
-Firewall — lock down the droplet so only necessary ports are exposed
-CORS — make the allowed origin configurable for production

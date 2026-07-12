@@ -17,3 +17,7 @@ backend/vendor/
 # OS
 .DS_Store
 Thumbs.db
+
+# Project Notes
+TODO.md
+
