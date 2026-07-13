@@ -1,38 +1,59 @@
-.list {
+.grid {
   display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.day {
-  display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
 }
 
-.dayHeading {
-  font-size: 18px;
+.column {
+  flex: 1;
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dayHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 2px solid var(--border);
+}
+
+.weekday {
+  font-size: 13px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.monthDay {
+  font-size: 20px;
+  font-weight: 700;
   color: var(--text-h);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
 }
 
 .slots {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .slot {
-  padding: 10px 20px;
+  width: 100%;
+  padding: 10px 8px;
   border: 1px solid var(--accent-border);
   border-radius: 6px;
   background: var(--accent-bg);
   color: var(--accent);
-  font-size: 15px;
+  font-size: 13px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
+  text-align: center;
 }
 
 .slot:hover {
@@ -41,7 +62,9 @@
 }
 
 .empty {
+  font-size: 13px;
   color: var(--text);
+  opacity: 0.4;
   text-align: center;
-  padding: 40px 0;
+  padding: 12px 0;
 }

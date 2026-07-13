@@ -8,6 +8,36 @@ export async function fetchSlots(): Promise<Slot[]> {
   return res.json();
 }
 
+export async function signup(
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+): Promise<void> {
+  const res = await fetch(`${BACKEND_URL}/users`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, first_name: firstName, last_name: lastName }),
+  });
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg || "Signup failed");
+  }
+}
+
+export async function login(email: string, password: string): Promise<void> {
+  const res = await fetch(`${BACKEND_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ email, password }),
+  });
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg || "Login failed");
+  }
+}
+
 export async function createBooking(
   slotId: number,
   userName: string,

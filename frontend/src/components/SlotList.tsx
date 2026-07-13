@@ -2,17 +2,19 @@ import type { Slot } from "../types";
 import styles from "./SlotList.module.css";
 
 interface Props {
+  days: string[];
   groupedSlots: Record<string, Slot[]>;
   onSelectSlot: (slot: Slot) => void;
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+function formatDayOfWeek(dateStr: string): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short" });
+}
+
+function formatMonthDay(dateStr: string): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function formatTime(dateStr: string): string {
@@ -22,31 +24,35 @@ function formatTime(dateStr: string): string {
   });
 }
 
-export default function SlotList({ groupedSlots, onSelectSlot }: Props) {
-  const days = Object.keys(groupedSlots).sort();
-
-  if (days.length === 0) {
-    return <p className={styles.empty}>No available slots at this time.</p>;
-  }
-
+export default function SlotList({ days, groupedSlots, onSelectSlot }: Props) {
   return (
-    <div className={styles.list}>
-      {days.map((day) => (
-        <div key={day} className={styles.day}>
-          <h2 className={styles.dayHeading}>{formatDate(groupedSlots[day][0].start_time)}</h2>
-          <div className={styles.slots}>
-            {groupedSlots[day].map((slot) => (
-              <button
-                key={slot.id}
-                className={styles.slot}
-                onClick={() => onSelectSlot(slot)}
-              >
-                {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
-              </button>
-            ))}
+    <div className={styles.grid}>
+      {days.map((day) => {
+        const slots = groupedSlots[day] ?? [];
+        return (
+          <div key={day} className={styles.column}>
+            <div className={styles.dayHeader}>
+              <span className={styles.weekday}>{formatDayOfWeek(day)}</span>
+              <span className={styles.monthDay}>{formatMonthDay(day)}</span>
+            </div>
+            <div className={styles.slots}>
+              {slots.length === 0 ? (
+                <p className={styles.empty}>No slots</p>
+              ) : (
+                slots.map((slot) => (
+                  <button
+                    key={slot.id}
+                    className={styles.slot}
+                    onClick={() => onSelectSlot(slot)}
+                  >
+                    {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                  </button>
+                ))
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
