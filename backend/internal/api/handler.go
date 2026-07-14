@@ -2,9 +2,7 @@ package api
 
 import (
 	"net/http"
-
 	"github.com/jackc/pgx/v5/pgxpool"
-
 	"time-booker/internal/helper"
 )
 

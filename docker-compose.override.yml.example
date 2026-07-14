@@ -1,0 +1,26 @@
+# docker-compose.override.yml
+#
+# This file is automatically merged on top of docker-compose.yml by Docker Compose
+# whenever you run `docker compose up` locally. It is intentionally NOT committed to
+# the droplet, so it has no effect in production.
+#
+# Why this exists:
+# In production, the Go backend (app) is internal-only — it is only reachable by nginx
+# inside the Docker network. This is intentional: all traffic goes through nginx, which
+# handles SSL termination, rate limiting, and other protections.
+#
+# Locally, if you want to run the frontend with `npm run dev` (Vite's dev server), Vite
+# runs on your host machine outside of Docker and needs to reach the Go backend directly.
+# Without this file, port 8080 is not exposed to the host, so Vite's requests to
+# http://localhost:8080 fail with ERR_CONNECTION_REFUSED.
+#
+# This override exposes port 8080 to the host so that `npm run dev` can reach the backend
+# while still letting the DB and app containers stay internal in both environments.
+#
+# To use the full Docker stack locally instead (no npm run dev), just ignore this file —
+# everything still works through nginx on port 80 as normal.
+
+services:
+  app:
+    ports:
+      - "8080:8080"

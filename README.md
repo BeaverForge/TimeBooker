@@ -24,7 +24,17 @@ Copy the example env file and fill in your values:
 cp .env.example .env
 ```
 
-### 2. Start the database and backend API
+### 2. Configure local Docker overrides
+
+Copy the example Docker Compose override file for local development:
+
+```bash
+cp docker-compose.override.yml.example docker-compose.override.yml
+```
+
+This exposes the Go backend on port 8080 so the Vite dev server can reach it. It is gitignored and has no effect in production.
+
+### 3. Start the database and backend API
 
 ```bash
 docker compose up --build
@@ -34,7 +44,7 @@ This does two things:
 - **Builds** the Go backend into a Docker image using the `Dockerfile` in `backend/`. The build compiles the Go source into a single binary.
 - **Starts** two containers: `db` (PostgreSQL) and `app` (the Go API server). On first run, PostgreSQL automatically executes `backend/internal/db/sql/schema.sql` to create the database tables. The two containers communicate over a private internal Docker network.
 
-The API will be available at `http://localhost:8080`.
+With the override file in place, the API will be available at `http://localhost:8080` for the Vite dev server to reach. Without it, the backend is internal to Docker and only reachable through nginx at `http://localhost`.
 
 To stop the containers:
 
@@ -42,7 +52,7 @@ To stop the containers:
 docker compose down
 ```
 
-### 3. Start the frontend dev server
+### 4. Start the frontend dev server
 
 In a separate terminal, from the `frontend/` directory:
 

@@ -27,7 +27,7 @@ func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
 	err := handler.db.QueryRow(context.Background(),
 		`SELECT id, password_hash, role FROM users WHERE email = $1`,
 		input.Email).Scan(&user.ID, &user.PasswordHash, &user.Role)
-	if err != nil {
+	if err != nil {	
 		http.Error(w, "invalid email or password", http.StatusUnauthorized)
 		return
 	}

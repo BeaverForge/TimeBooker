@@ -18,6 +18,10 @@ backend/vendor/
 .DS_Store
 Thumbs.db
 
+# Local dev overrides
+docker-compose.override.yml
+
 # Project Notes
 TODO.md
+NOTES.md
 

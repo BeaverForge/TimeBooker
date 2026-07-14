@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -60,6 +61,8 @@ func validateUserInput(email, password, firstName, lastName string) string {
 }
 
 func (handler *Handler) createUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("createUser called")
+
 	var input struct {
 		Email     string `json:"email"`
 		Password  string `json:"password"`
@@ -68,19 +71,27 @@ func (handler *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
+			log.Println("createUser called2")
+
 		return
 	}
 
 	if msg := validateUserInput(input.Email, input.Password, input.FirstName, input.LastName); msg != "" {
 		http.Error(w, msg, http.StatusBadRequest)
+			log.Println("createUser calledeeee")
+
 		return
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		http.Error(w, "failed to hash password", http.StatusInternalServerError)
+			log.Println("createUser caleled")
+
 		return
 	}
+	log.Println("createUs")
+	log.Println("createUddsser called")
 
 	var u model.User
 	err = handler.db.QueryRow(context.Background(),
@@ -90,6 +101,8 @@ func (handler *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		input.Email, hash, input.FirstName, input.LastName,
 	).Scan(&u.ID, &u.Email, &u.FirstName, &u.LastName, &u.Role, &u.EmailVerified, &u.CreatedAt)
 	if err != nil {
+			log.Println("error creating user:", err)
+
 		http.Error(w, "failed to create user", http.StatusInternalServerError)
 		return
 	}
@@ -97,4 +110,6 @@ func (handler *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(u)
+		log.Println("Success!!!")
+
 }
