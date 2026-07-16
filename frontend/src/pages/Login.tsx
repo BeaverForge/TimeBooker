@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../api";
+import { login, getMe } from "../api";
+import { useAuth } from "../contexts/AuthContext";
 import styles from "./Login.module.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,10 +18,12 @@ export default function Login() {
     setLoading(true);
     try {
       await login(email, password);
+      setUser(await getMe());
       navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
+      
       setLoading(false);
     }
   }

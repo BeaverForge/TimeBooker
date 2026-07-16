@@ -1,4 +1,4 @@
-import type { Slot, Booking } from "./types";
+import type { Slot, Booking, User } from "./types";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? "/api";
 
@@ -36,6 +36,21 @@ export async function login(email: string, password: string): Promise<void> {
     const msg = await res.text();
     throw new Error(msg || "Login failed");
   }
+}
+
+export async function logout(): Promise<void> {
+  await fetch(`${BACKEND_URL}/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+}
+
+export async function getMe(): Promise<User> {
+  const res = await fetch(`${BACKEND_URL}/users/me`, {
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Not authenticated");
+  return res.json();
 }
 
 export async function createBooking(

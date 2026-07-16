@@ -56,6 +56,16 @@ func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (handler *Handler) logout(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "token",
+		HttpOnly: true, // Prevents JavaScript access to the cookie in response
+		MaxAge:   -1, // 24 hours
+		Secure:   false, // Set to true in production with HTTPS
+		SameSite: http.SameSiteStrictMode,
+	})
+}
+
 func generateJWT(user model.User, secret string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id":    user.ID,

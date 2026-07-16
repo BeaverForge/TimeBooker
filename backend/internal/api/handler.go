@@ -2,8 +2,9 @@ package api
 
 import (
 	"net/http"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"time-booker/internal/helper"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Handler struct {
@@ -23,5 +24,7 @@ func (handler *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /bookings/{id}/decline", handler.declineBooking)
 	mux.HandleFunc("PUT /bookings/{id}/cancel", handler.cancelBooking)
 	mux.HandleFunc("POST /users", handler.createUser)
+	mux.HandleFunc("GET /users/me", handler.getMe)
 	mux.HandleFunc("POST /login", handler.login)
+	mux.HandleFunc("POST /logout", handler.logout)
 }

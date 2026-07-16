@@ -1,3 +1,12 @@
+export interface User {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  email_verified: boolean;
+}
+
 export interface Slot {
   id: number;
   start_time: string;
