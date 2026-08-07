@@ -9,15 +9,6 @@ import CoachSlotModal from "../components/CoachSlotModal";
 import CreateSlotModal from "../components/CreateSlotModal";
 import styles from "../App.module.css";
 
-function groupByDay(slots: Slot[]): Record<string, Slot[]> {
-  if (slots == null || slots.length === 0) return {};
-  return slots.reduce<Record<string, Slot[]>>((acc, slot) => {
-    const day = new Date(slot.start_time).toISOString().slice(0, 10);
-    if (!acc[day]) acc[day] = [];
-    acc[day].push(slot);
-    return acc;
-  }, {});
-}
 
 function getNextFiveDays(): string[] {
   const days: string[] = [];
@@ -93,7 +84,7 @@ export default function Home() {
       {!loading && !error && (
         <SlotList
           days={getNextFiveDays()}
-          groupedSlots={groupByDay(slots)}
+          slots={slots}
           userRole={user?.role ?? "student"}
           onSelectSlot={setSelectedSlot}
         />
