@@ -8,20 +8,25 @@ import (
 	"strings"
 
 	"time-booker/internal/db/model"
+	"time-booker/internal/middleware"
 )
 
 func (handler *Handler) createBooking(w http.ResponseWriter, r *http.Request) {
+	userID, ok := r.Context().Value(middleware.ContextKeyUserID).(int)
+	if !ok {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
 	var input struct {
-		SlotID    int    `json:"slot_id"`
-		UserName  string `json:"user_name"`
-		UserEmail string `json:"user_email"`
+		SlotID int `json:"slot_id"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
-	if input.SlotID == 0 || input.UserName == "" || input.UserEmail == "" {
-		http.Error(w, "slot_id, user_name, and user_email are required", http.StatusBadRequest)
+	if input.SlotID == 0 {
+		http.Error(w, "slot_id is required", http.StatusBadRequest)
 		return
 	}
 
@@ -49,11 +54,11 @@ func (handler *Handler) createBooking(w http.ResponseWriter, r *http.Request) {
 
 	var b model.Booking
 	err = tx.QueryRow(ctx,
-		`INSERT INTO bookings (slot_id, user_name, user_email)
-		 VALUES ($1, $2, $3)
-		 RETURNING id, slot_id, user_name, user_email, status, created_at`,
-		input.SlotID, input.UserName, input.UserEmail,
-	).Scan(&b.ID, &b.SlotID, &b.UserName, &b.UserEmail, &b.Status, &b.CreatedAt)
+		`INSERT INTO bookings (slot_id, user_id)
+		 VALUES ($1, $2)
+		 RETURNING id, slot_id, user_id, status, created_at`,
+		input.SlotID, userID,
+	).Scan(&b.ID, &b.SlotID, &b.UserID, &b.Status, &b.CreatedAt)
 	if err != nil {
 		http.Error(w, "failed to create booking", http.StatusInternalServerError)
 		return
@@ -97,9 +102,9 @@ func (handler *Handler) updateBookingStatus(w http.ResponseWriter, r *http.Reque
 	var b model.Booking
 	err = handler.db.QueryRow(context.Background(),
 		`UPDATE bookings SET status = $1 WHERE id = $2
-		 RETURNING id, slot_id, user_name, user_email, status, created_at`,
+		 RETURNING id, slot_id, user_id, status, created_at`,
 		status, id,
-	).Scan(&b.ID, &b.SlotID, &b.UserName, &b.UserEmail, &b.Status, &b.CreatedAt)
+	).Scan(&b.ID, &b.SlotID, &b.UserID, &b.Status, &b.CreatedAt)
 	if err != nil {
 		http.Error(w, "booking not found", http.StatusNotFound)
 		return

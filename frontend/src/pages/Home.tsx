@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import type { Slot } from "../types";
 import { fetchSlots } from "../api";
+import { useAuth } from "../contexts/AuthContext";
 import SlotList from "../components/SlotList";
 import BookingModal from "../components/BookingModal";
+import SlotDetailModal from "../components/SlotDetailModal";
+import CoachSlotModal from "../components/CoachSlotModal";
+import CreateSlotModal from "../components/CreateSlotModal";
 import styles from "../App.module.css";
 
 function groupByDay(slots: Slot[]): Record<string, Slot[]> {
@@ -26,8 +30,10 @@ function getNextFiveDays(): string[] {
 }
 
 export default function Home() {
+  const { user } = useAuth();
   const [slots, setSlots] = useState<Slot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [showCreateSlot, setShowCreateSlot] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -39,13 +45,47 @@ export default function Home() {
   }, []);
 
   function handleBooked(slotId: number) {
-    setSlots((prev) => prev.filter((s) => s.id !== slotId));
+    setSlots((prev) => prev.map((s) => s.id === slotId ? { ...s, is_available: false } : s));
     setSelectedSlot(null);
+  }
+
+  function handleSlotCreated(slot: Slot) {
+    setSlots((prev) => [...prev, slot]);
+    setShowCreateSlot(false);
+  }
+
+  const isCoach = user?.role === "coach";
+
+  function renderModal() {
+    if (!selectedSlot) return null;
+
+    if (isCoach) {
+      return <CoachSlotModal slot={selectedSlot} onClose={() => setSelectedSlot(null)} />;
+    }
+
+    if (!selectedSlot.is_available) {
+      return <SlotDetailModal slot={selectedSlot} onClose={() => setSelectedSlot(null)} />;
+    }
+
+    return (
+      <BookingModal
+        slot={selectedSlot}
+        onClose={() => setSelectedSlot(null)}
+        onBooked={handleBooked}
+      />
+    );
   }
 
   return (
     <main className={styles.main}>
-      <h1 className={styles.heading}>Book a Lesson</h1>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.heading}>Book a Lesson</h1>
+        {isCoach && (
+          <button className={styles.addSlotButton} onClick={() => setShowCreateSlot(true)}>
+            + Add Slot
+          </button>
+        )}
+      </div>
 
       {loading && <p className={styles.status}>Loading...</p>}
       {error && <p className={styles.error}>{error}</p>}
@@ -54,15 +94,17 @@ export default function Home() {
         <SlotList
           days={getNextFiveDays()}
           groupedSlots={groupByDay(slots)}
+          userRole={user?.role ?? "student"}
           onSelectSlot={setSelectedSlot}
         />
       )}
 
-      {selectedSlot && (
-        <BookingModal
-          slot={selectedSlot}
-          onClose={() => setSelectedSlot(null)}
-          onBooked={handleBooked}
+      {renderModal()}
+
+      {showCreateSlot && (
+        <CreateSlotModal
+          onClose={() => setShowCreateSlot(false)}
+          onCreated={handleSlotCreated}
         />
       )}
     </main>

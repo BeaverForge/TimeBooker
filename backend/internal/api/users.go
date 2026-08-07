@@ -3,15 +3,14 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"regexp"
 
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
 	"time-booker/internal/db/model"
+	"time-booker/internal/middleware"
 )
 
 var emailRegex = regexp.MustCompile(`^[^@\s]+@[^@\s]+\.[^@\s]+$`)
@@ -104,40 +103,17 @@ func (handler *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *Handler) getMe(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("token")
-	if err != nil {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	token, err := jwt.Parse(cookie.Value, func(t *jwt.Token) (any, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method")
-		}
-		return []byte(handler.jwtSecret), nil
-	})
-	if err != nil || !token.Valid {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	userID, ok := claims["user_id"].(float64)
+	userID, ok := r.Context().Value(middleware.ContextKeyUserID).(int)
 	if !ok {
 		http.Error(w, "unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	var u model.User
-	err = handler.db.QueryRow(context.Background(),
+	err := handler.db.QueryRow(context.Background(),
 		`SELECT id, email, first_name, last_name, role, email_verified, created_at
 		 FROM users WHERE id = $1`,
-		int(userID),
+		userID,
 	).Scan(&u.ID, &u.Email, &u.FirstName, &u.LastName, &u.Role, &u.EmailVerified, &u.CreatedAt)
 	if err != nil {
 		http.Error(w, "user not found", http.StatusNotFound)

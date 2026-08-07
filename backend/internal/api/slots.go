@@ -12,14 +12,14 @@ import (
 func (handler *Handler) listSlots(w http.ResponseWriter, r *http.Request) {
 	rows, err := handler.db.Query(context.Background(),
 		`SELECT id, start_time, end_time, is_available, created_at
-		 FROM slots WHERE is_available = TRUE ORDER BY start_time`)
+		 FROM slots ORDER BY start_time`)
 	if err != nil {
 		http.Error(w, "failed to query slots", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	var slots []model.Slot
+	slots := make([]model.Slot, 0)
 	for rows.Next() {
 		var s model.Slot
 		if err := rows.Scan(&s.ID, &s.StartTime, &s.EndTime, &s.IsAvailable, &s.CreatedAt); err != nil {

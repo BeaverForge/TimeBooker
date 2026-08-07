@@ -22,14 +22,14 @@ Copy the example env file and fill in your values:
 
 ```bash
 cp .env.example .env
-```
+```day
 
 ### 2. Configure local Docker overrides
 
 Copy the example Docker Compose override file for local development:
 
 ```bash
-cp docker-compose.override.yml.example docker-compose.override.yml
+cp docker-compose.override.yml.example docF someker-compose.override.yml
 ```
 
 This exposes the Go backend on port 8080 so the Vite dev server can reach it. It is gitignored and has no effect in production.
@@ -68,5 +68,25 @@ npm run dev
 
 The app will be available at `http://localhost:5173`.
 
+## Manual DB updates
 
+After starting the containers, connect to the database:
+
+```bash
+docker compose exec db psql -U $POSTGRES_USER -d $POSTGRES_DB
+```
+
+Then, you can run whatever queries you like. 
+
+For example, you can insert some available slots:
+
+```sql
+INSERT INTO slots (start_time, end_time) VALUES
+  (NOW() + INTERVAL '1 day' + INTERVAL '9 hours',  NOW() + INTERVAL '1 day' + INTERVAL '10 hours'),
+  (NOW() + INTERVAL '1 day' + INTERVAL '11 hours', NOW() + INTERVAL '1 day' + INTERVAL '12 hours'),
+  (NOW() + INTERVAL '2 days' + INTERVAL '14 hours', NOW() + INTERVAL '2 days' + INTERVAL '15 hours'),
+  (NOW() + INTERVAL '2 days' + INTERVAL '16 hours', NOW() + INTERVAL '2 days' + INTERVAL '17 hours');
+```
+
+Coaches can also create slots directly from the UI once logged in with a coach account.
 

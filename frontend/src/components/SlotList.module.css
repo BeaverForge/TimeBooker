@@ -61,6 +61,23 @@
   color: #fff;
 }
 
+.slotBooked {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text);
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.slotBooked:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.slotCoach {
+  border-style: dashed;
+}
+
 .empty {
   font-size: 13px;
   color: var(--text);

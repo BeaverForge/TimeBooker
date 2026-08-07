@@ -8,6 +8,7 @@ import (
 
 	"time-booker/internal/api"
 	"time-booker/internal/db"
+	"time-booker/internal/middleware"
 )
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 	handler.RegisterRoutes(mux)
 
 	log.Println("Server starting on :8080")
-	if err := http.ListenAndServe(":8080", api.HandleCors(mux)); err != nil {
+	if err := http.ListenAndServe(":8080", middleware.HandleCors(mux)); err != nil {
 		log.Fatal(err)
 	}
 }

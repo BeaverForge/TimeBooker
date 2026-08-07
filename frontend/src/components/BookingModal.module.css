@@ -32,6 +32,11 @@
   font-size: 15px;
 }
 
+.userName {
+  font-size: 14px;
+  color: var(--text);
+}
+
 .form {
   display: flex;
   flex-direction: column;

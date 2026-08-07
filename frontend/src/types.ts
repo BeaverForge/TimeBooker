@@ -18,8 +18,7 @@ export interface Slot {
 export interface Booking {
   id: number;
   slot_id: number;
-  user_name: string;
-  user_email: string;
+  user_id: number;
   status: string;
   created_at: string;
 }

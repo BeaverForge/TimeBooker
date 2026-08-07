@@ -4,6 +4,7 @@ import styles from "./SlotList.module.css";
 interface Props {
   days: string[];
   groupedSlots: Record<string, Slot[]>;
+  userRole: string;
   onSelectSlot: (slot: Slot) => void;
 }
 
@@ -24,7 +25,7 @@ function formatTime(dateStr: string): string {
   });
 }
 
-export default function SlotList({ days, groupedSlots, onSelectSlot }: Props) {
+export default function SlotList({ days, groupedSlots, userRole, onSelectSlot }: Props) {
   return (
     <div className={styles.grid}>
       {days.map((day) => {
@@ -42,7 +43,7 @@ export default function SlotList({ days, groupedSlots, onSelectSlot }: Props) {
                 slots.map((slot) => (
                   <button
                     key={slot.id}
-                    className={styles.slot}
+                    className={`${styles.slot} ${!slot.is_available ? styles.slotBooked : ""} ${userRole === "coach" ? styles.slotCoach : ""}`}
                     onClick={() => onSelectSlot(slot)}
                   >
                     {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
